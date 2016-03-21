@@ -1,0 +1,103 @@
+
+const LEX_LETTER = 0;
+const LEX_SPACE = 1;
+const LEX_PUNCTUATION = 2;
+const LEX_WORDBEGIN = 3;
+const LEX_WORDEND = 4;
+const LEX_NONE = 8;
+const LEX_END = 9;
+
+function getFinalTokens () {
+  let type;
+  if (this.lastType === LEX_WORDEND || this.lastType === LEX_END) {
+    type = LEX_END;
+  } else {
+    type = LEX_WORDEND;
+  }
+  this.lastType = type;
+  return [type, null];
+}
+
+function getTokenType (code) {
+  if (this.lexpos === 0 && this.lastType === LEX_NONE) {
+    return LEX_WORDBEGIN;
+  }
+  if (code === 32) {
+    if (this.lastType === LEX_LETTER || this.lastType === LEX_PUNCTUATION) {
+      return LEX_WORDEND;
+    }
+    return LEX_SPACE;
+  }
+  if (code >= 65 && code <= 90) {
+    if (this.lastType === LEX_SPACE) {
+      return LEX_WORDBEGIN;
+    }
+    return LEX_LETTER;
+  }
+  if (this.lastType === LEX_SPACE) {
+    return LEX_WORDBEGIN;
+  }
+  return LEX_PUNCTUATION;
+}
+
+function lex () {
+  let type;
+  let char;
+  let code;
+  if (this.lexpos === this.cipher.length) {
+    return this::getFinalTokens();
+  }
+  char = this.cipher[this.lexpos];
+  code = char.charCodeAt(0);
+  type = this::getTokenType(code);
+  if (type !== LEX_WORDBEGIN && type !== LEX_WORDEND) {
+    this.lexpos += 1;
+  }
+  this.lastType = type;
+  return [type, char];
+}
+
+function getLetter(char) {
+  return {
+    char
+  };
+}
+
+function getPunct(char) {
+  return {
+    char,
+    punctuation: true
+  };
+}
+
+export default class CryptoquoteParser {
+  constructor (cipher) {
+    this.cipher = cipher.toUpperCase();
+    this.lexpos = 0;
+    this.lastType = LEX_NONE;
+  }
+  
+  tokenize () {
+    const tokens = [];
+    let word = [];
+    let [type, char] = this::lex();
+    while (type !== LEX_END) {
+      switch (type) {
+        case LEX_WORDBEGIN:
+          word = [];
+          break;
+        case LEX_WORDEND:
+          tokens.push(word);
+          break;
+        case LEX_LETTER:
+          word.push(getLetter(char));
+          break;
+        case LEX_PUNCTUATION:
+          word.push(getPunct(char));
+          break;
+      }
+      [type, char] = this::lex();
+    }
+    return tokens;
+  }
+}

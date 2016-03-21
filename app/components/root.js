@@ -1,4 +1,6 @@
 import m from 'mithril';
+import QuoteEntry from './quote-entry';
+import SolverForm from './solver-form';
 
 class Root {
   view() {
@@ -6,7 +8,10 @@ class Root {
       m('header', [
         m('h1', 'DeCryptoquote')
       ]),
-      m('main')
+      m('main', [
+        QuoteEntry,
+        SolverForm
+      ])
     ]);
   }
 }

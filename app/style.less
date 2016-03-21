@@ -1,0 +1,36 @@
+body {
+  padding: 2em;
+}
+
+.solver .word {
+  margin-right: 1em;
+  margin-bottom: 1em;
+  float: left;
+  
+  .letter {
+    float: left;
+    text-align: center;
+    margin-right: 0.25em;
+    input {
+      width: 2em;
+      text-align: center;
+    }
+    span {
+      display: block;
+    }
+    .punct {
+      position: relative;
+      top: 0.25em;
+    }
+  }
+}
+
+.word:before,
+.word:after {
+    content: " ";
+    display: table;
+}
+
+.word:after {
+    clear: both;
+}
