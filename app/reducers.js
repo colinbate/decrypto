@@ -15,7 +15,13 @@ function key (state = new Map(), action) {
   switch (action.type) {
     case Actions.ENTER_GUESS:
       if (state.get(action.cipher) !== action.plain) {
-        return (new Map(state)).set(action.cipher, action.plain);
+        if (action.plain) {
+          return (new Map(state)).set(action.cipher, action.plain);
+        } else {
+          const newstate = (new Map(state));
+          newstate.delete(action.cipher);
+          return newstate;
+        }
       }
   }
   return state;
