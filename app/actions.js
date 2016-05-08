@@ -1,6 +1,8 @@
 export const SET_QUOTE = 'SET_QUOTE';
 export const PARSED_QUOTE = 'PARSED_QUOTE';
 export const ENTER_GUESS = 'ENTER_GUESS';
+export const STORE_FIELD = 'STORE_FIELD';
+export const RESET = 'RESET';
 
 import Parser from './parser';
 
@@ -11,19 +13,43 @@ export function setQuote (quote) {
   };
 }
 
+export function storeField (field, value) {
+  return {
+    type: STORE_FIELD,
+    field,
+    value
+  };
+}
+
 export function parseQuote () {
   return (dispatch, getStore) => {
-    const {quote} = getStore();
-    const tokens = (new Parser(quote)).tokenize();
+    const {quote, fields} = getStore();
+    if (!quote || quote.trim() === '') {
+      return false;
+    }
+    const cipher = (fields.get('given-cipher') || '').toUpperCase();
+    const plain = (fields.get('given-plain') || '').toUpperCase();
+    let flags;
+    if (cipher && plain) {
+      flags = {[cipher]: 'given'};
+      setTimeout(() => dispatch(redraw(guess(cipher, plain))));
+    }
+    const tokens = (new Parser(quote)).tokenize(flags);
     dispatch(setLetters(tokens));
   };
 }
+
 
 function setLetters (letters) {
   return {
     letters,
     type: PARSED_QUOTE
   };
+}
+
+function redraw (action) {
+  action.redraw = true;
+  return action;
 }
 
 function guess (cipher, plain) {
@@ -48,4 +74,10 @@ export function enterGuess (cipher, plain) {
     };
   }
   return guess(cipher, plain);
+}
+
+export function reset () {
+  return {
+    type: RESET
+  };
 }

@@ -1,13 +1,13 @@
 import m from 'mithril';
 import {connect} from 'mithril-redux';
-import {enterGuess} from '../actions';
+import {enterGuess, reset} from '../actions';
 import findDupes from '../find-dupes';
 
 class SolverForm {
   view(ctrl, {show, words, key}) {
     const dupes = findDupes(key);
     return m('form.solver.uk-form', 
-      !show ? m('div') : words.map(word => (
+      !show ? m('div') : m('div', [m('div.uk-clearfix', words.map(word => (
         m('div.word', 
           word.map(letter => (
             m('div.letter', [
@@ -17,15 +17,19 @@ class SolverForm {
                   m('input[type="text"]', {
                     value: key.get(letter.char) || '',
                     oninput: m.withAttr('value', ctrl.enterGuess(letter.char)),
-                    class: dupes.has(letter.char) ? 'uk-form-danger' : ''
+                    class: dupes.has(letter.char) ? 'uk-form-danger' : '',
+                    disabled: !!letter.given
                   }),
                   m('span', letter.char)
                 ])
             ])
           ))
         )
-      ))
-    );
+      ))),
+      m('div.uk-form-row.reset-row', [
+        m('button.uk-button', {onclick: ctrl.reset()}, 'Start New')
+      ])
+    ]));
   }
 }
 
@@ -34,5 +38,6 @@ export default connect((state) => ({
   words: state.letters,
   key: state.key
 }), {
-  enterGuess
+  enterGuess,
+  reset
 })(SolverForm);

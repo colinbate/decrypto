@@ -9,7 +9,7 @@ const LEX_END = 9;
 
 function getFinalTokens () {
   let type;
-  if (this.lastType === LEX_WORDEND || this.lastType === LEX_END) {
+  if (this.lastType === LEX_WORDEND || this.lastType === LEX_END || this.lastType === LEX_SPACE) {
     type = LEX_END;
   } else {
     type = LEX_WORDEND;
@@ -57,10 +57,14 @@ function lex () {
   return [type, char];
 }
 
-function getLetter(char) {
-  return {
+function getLetter(char, flagMap = {}) {
+  const ret = {
     char
   };
+  if (char in flagMap) {
+    ret[flagMap[char]] = true;
+  }
+  return ret;
 }
 
 function getPunct(char) {
@@ -72,12 +76,12 @@ function getPunct(char) {
 
 export default class CryptoquoteParser {
   constructor (cipher) {
-    this.cipher = cipher.toUpperCase();
+    this.cipher = cipher.toUpperCase().trim();
     this.lexpos = 0;
     this.lastType = LEX_NONE;
   }
   
-  tokenize () {
+  tokenize (flagMap) {
     const tokens = [];
     let word = [];
     let [type, char] = this::lex();
@@ -90,7 +94,7 @@ export default class CryptoquoteParser {
           tokens.push(word);
           break;
         case LEX_LETTER:
-          word.push(getLetter(char));
+          word.push(getLetter(char, flagMap));
           break;
         case LEX_PUNCTUATION:
           word.push(getPunct(char));

@@ -4,9 +4,9 @@ import * as Actions from './actions';
 function letters(state = [], action) {
   switch (action.type) {
     case Actions.PARSED_QUOTE:
-      console.log('letters: PARSED_QUOTE');
-      console.log(action.letters);
       return action.letters;
+    case Actions.RESET:
+      return [];
   }
   return state;
 }
@@ -23,6 +23,8 @@ function key (state = new Map(), action) {
           return newstate;
         }
       }
+    case Actions.RESET:
+      return new Map();
   }
   return state;
 }
@@ -30,9 +32,9 @@ function key (state = new Map(), action) {
 function showSolver(state = false, action) {
   switch (action.type) {
     case Actions.PARSED_QUOTE:
-      console.log('showSolver: PARSED_QUOTE');
-      console.log(!!action.letters.length);
       return !!action.letters.length;
+    case Actions.RESET:
+      return false;
   }
   return state;
 }
@@ -41,6 +43,21 @@ function quote (state = '', action) {
   switch (action.type) {
     case Actions.SET_QUOTE:
       return action.quote;
+    case Actions.RESET:
+      return '';
+  }
+  return state;
+}
+
+function fields (state = new Map(), action) {
+  let newstate;
+  switch (action.type) {
+    case Actions.STORE_FIELD:
+      newstate = new Map(state);
+      newstate.set(action.field, action.value);
+      return newstate;
+    case Actions.RESET:
+      return new Map();
   }
   return state;
 }
@@ -49,7 +66,8 @@ const rootReducer = combineReducers({
   letters,
   key,
   showSolver,
-  quote
+  quote,
+  fields
 });
 
 export default rootReducer;
