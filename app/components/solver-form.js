@@ -3,9 +3,13 @@ import {connect} from 'mithril-redux';
 import {enterGuess, reset} from '../actions';
 import findDupes from '../find-dupes';
 
+const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
 class SolverForm {
   view(ctrl, {show, words, key}) {
+    console.log(key);
     const dupes = findDupes(key);
+    const guessed = new Set(key.values());
     return m('form.solver.uk-form', 
       !show ? m('div') : m('div', [m('div.uk-clearfix', words.map(word => (
         m('div.word', 
@@ -26,6 +30,11 @@ class SolverForm {
           ))
         )
       ))),
+      m('div.uk-form-row.reset-row', [
+        m('div.remaining-letters', alpha.split('').map(remlet => m(
+          'span', {class: guessed.has(remlet) ? 'uk-text-muted' : 'uk-text-bold'}, remlet
+        )))
+      ]),
       m('div.uk-form-row.reset-row', [
         m('button.uk-button', {onclick: ctrl.reset()}, 'Start New')
       ])

@@ -21,11 +21,21 @@ const deserialize = (str) => {
 };
 
 export default function configureStore(initialState) {
-  const createModifiedStore = applyMiddleware(
-    thunkMiddleware,
-    redrawMiddleware
-  )(createStore);
-  const persistentStore = compose(persistState(void 0, {serialize, deserialize}))(createModifiedStore);
-  //const reducer = compose(mergePersistedState())(rootReducer);
-  return persistentStore(rootReducer, initialState);
+  // const createModifiedStore = applyMiddleware(
+  //   thunkMiddleware,
+  //   redrawMiddleware
+  // )(createStore);
+  // const persistentStore = compose(persistState(void 0, {serialize, deserialize}))(createModifiedStore);
+  // //const reducer = compose(mergePersistedState())(rootReducer);
+  // return persistentStore(rootReducer, initialState);
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+  const enhancer = composeEnhancers(
+    applyMiddleware(
+      thunkMiddleware,
+      redrawMiddleware
+    ),
+    persistState(void 0, {serialize, deserialize})
+  );
+  const store = createStore(rootReducer, initialState, enhancer);
+  return store;
 }
