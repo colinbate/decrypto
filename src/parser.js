@@ -45,11 +45,11 @@ function lex () {
   let char;
   let code;
   if (this.lexpos === this.cipher.length) {
-    return this::getFinalTokens();
+    return getFinalTokens.call(this);
   }
   char = this.cipher[this.lexpos];
   code = char.charCodeAt(0);
-  type = this::getTokenType(code);
+  type = getTokenType.call(this, code);
   if (type !== LEX_WORDBEGIN && type !== LEX_WORDEND) {
     this.lexpos += 1;
   }
@@ -84,7 +84,7 @@ export default class CryptoquoteParser {
   tokenize (flagMap) {
     const tokens = [];
     let word = [];
-    let [type, char] = this::lex();
+    let [type, char] = lex.call(this);
     while (type !== LEX_END) {
       switch (type) {
         case LEX_WORDBEGIN:
@@ -100,7 +100,7 @@ export default class CryptoquoteParser {
           word.push(getPunct(char));
           break;
       }
-      [type, char] = this::lex();
+      [type, char] = lex.call(this);
     }
     return tokens;
   }

@@ -1,4 +1,4 @@
-export default function findDuplicates (key) {
+export function findDuplicates (key) {
   const dupes = new Set();
   const rev = new Map();
   if (key) {
