@@ -1,24 +1,32 @@
 <script>
-import {createEventDispatcher, beforeUpdate, onMount} from 'svelte';
+import {createEventDispatcher, onMount} from 'svelte';
 import {findDuplicates} from './find-dupes.js';
+import {saveMap, loadMap} from './storage.js';
 import {writable, derived} from 'svelte/store';
 export let words;
 export let knowns;
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+let knownMap = new Map();
 const key = writable(new Map());
 const dupes = derived(key, k => findDuplicates(k));
 const guessed = derived(key, k => new Set(k.values()));
 const dispatch = createEventDispatcher();
-beforeUpdate(() => {
-  console.log(`Updating Solver, key size`, $key.size, 'knowns', knowns);
-});
+const KEYS = 'KEYS';
+const KNOWN = 'KNOWN';
 onMount(() => {
-  console.log('Mounting Solver, key size', $key.size, 'knowns', knowns);
-  if (knowns.length) {
+  const keys = loadMap(KEYS);
+  knownMap = loadMap(KNOWN);
+  if (keys) {
+    key.update(() => keys);
+  } else if (knowns.length) {
+    knownMap = new Map();
     key.update(k => {
       knowns.forEach(known => {
         k.set(known[0], known[1]);
+        knownMap.set(known[0], known[1]);
       });
+      saveMap(KEYS, k);
+      saveMap(KNOWN, knownMap);
       return k;
     });
   }
@@ -38,25 +46,33 @@ function enterGuess(enc) {
       return;
     }
     if (plain) {
-      key.update(k => k.set(enc, plain));
+      key.update(k => {
+        k.set(enc, plain);
+        saveMap(KEYS, k);
+        return k;
+      });
     } else {
       key.update(k => {
         k.delete(enc);
+        saveMap(KEYS, k);
         return k;
       });
     }
   };
 }
 
-function clear() {
-  key.update(k => {
-    k.clear();
-    return k;
+function clear(onlyEntered) {
+  key.update(() => {
+    const newmap = !onlyEntered ? new Map() : new Map(knownMap);
+    saveMap(KEYS, !onlyEntered ? null : newmap);
+    return newmap;
   });
 }
 
 function reset() {
-  clear();
+  clear(false);
+  knownMap = new Map();
+  saveMap(KNOWN, null);
   dispatch('reset');
 }
 
