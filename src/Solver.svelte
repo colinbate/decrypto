@@ -7,6 +7,7 @@ export let words;
 export let knowns;
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 let knownMap = new Map();
+let selected = '';
 const key = writable(new Map());
 const dupes = derived(key, k => findDuplicates(k));
 const guessed = derived(key, k => new Set(k.values()));
@@ -76,6 +77,16 @@ function reset() {
   dispatch('reset');
 }
 
+function select(enc) {
+  return () => {
+    selected = enc;
+  };
+}
+
+function deselect() {
+  selected = '';
+}
+
 </script>
 <style>
 .word {
@@ -91,8 +102,11 @@ function reset() {
 }
 
 .letter input {
-  width: 2rem;
+  width: 1.5rem;
   text-align: center;
+  border: 0;
+  background: hsla(0, 0%, 90%, 1);
+  padding: 0.2rem;
 }
 .letter input[disabled] {
   color: hsl(120, 33%, 60%);
@@ -116,7 +130,6 @@ function reset() {
   justify-content: space-between;
 }
 .dupe {
-  border-color: hsla(10, 90%, 40%, 1);
   color: hsla(10, 90%, 40%, 1);
   background-color: hsla(10, 100%, 85%, 1);
 }
@@ -126,6 +139,9 @@ function reset() {
 }
 button {
   margin-right: 1rem;
+}
+.letter .highlight {
+  background: hsla(140, 60%, 80%, 1);
 }
 </style>
 <form class="solver">
@@ -142,6 +158,9 @@ button {
                   type="text"
                   value={$key.get(letter.char) || ''}
                   on:input={enterGuess(letter.char)}
+                  on:focus={select(letter.char)}
+                  on:blur={deselect}
+                  class:highlight={letter.char === selected}
                   class:dupe={$dupes.has(letter.char)}
                   disabled={!!letter.given}>
                 <span>{letter.char}</span>
