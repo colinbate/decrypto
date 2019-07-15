@@ -1,9 +1,12 @@
 <script>
+	import {onMount} from 'svelte';
 	import QuoteEntry from './QuoteEntry.svelte';
 	import Solver from './Solver.svelte';
 	import Parser from './parser.js';
+	import {save, load} from './storage.js';
 	let words = [];
 	let knowns = [];
+	const PARSED = 'PARSED';
 	function startSolving(ev) {
 		const { quote, knownEnc, knownPlain } = ev.detail;
 		const enc = (knownEnc || '').toUpperCase();
@@ -13,12 +16,24 @@
 			flags = {[enc]: 'given'};
 			knowns = [[enc, plain]];
 		}
-		words = (new Parser(quote)).tokenize(flags);
+		const parsed = (new Parser(quote)).tokenize(flags);
+		save(PARSED, parsed);
+		words = parsed;
 	}
 
 	function startOver() {
+		save(PARSED, null);
+		knowns = [];
 		words = [];
 	}
+
+	onMount(() => {
+		console.log(`Mounting whole app, check for stored data`);
+		const loaded = load(PARSED);
+		if (loaded) {
+			words = loaded;
+		}
+	});
 </script>
 
 <style>
