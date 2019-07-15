@@ -1,8 +1,11 @@
-// import { writable } from 'svelte/store';
+import { save, load } from './storage.js';
 
 const API_BASE = 'https://api.razzlepuzzles.com/cryptograms?om=false&locale=en&z=DATE-1'
+const LIST_KEY = 'LIST';
+const TODAY_KEY = 'TODAY';
+const INDEX_KEY = 'INDEX';
 
-let todayStr = '';
+let todayStr = load(TODAY_KEY) || '';
 let todayIndex = 0;
 let quotes = null;
 
@@ -27,16 +30,27 @@ function downloadQuotes() {
     const url = API_BASE.replace('DATE', today);
     quotes = fetch(url).then(r => r.json()).then(qs => qs.map(extractQuote)).then(list => {
       todayIndex = 0;
+      save(LIST_KEY, list);
+      save(TODAY_KEY, todayStr);
       return list;
     });
+  } else {
+    if (!quotes) {
+      quotes = Promise.resolve().then(() => {
+        const list = load(LIST_KEY) || [];
+        todayIndex = load(INDEX_KEY) || 0;
+        return list;
+      });
+    }
   }
   return quotes;
 }
 
 export function getNewQuote() {
   return downloadQuotes().then(quotes => {
-    const q = quotes[todayIndex];
-    todayIndex = (todayIndex + 1) % quotes.length;
+    const q = quotes.length ? quotes[todayIndex] : 'Could not load quote.';
+    todayIndex = ((todayIndex + 1) % quotes.length) || 0;
+    save(INDEX_KEY, todayIndex);
     return q;
   });
 }
