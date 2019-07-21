@@ -2,11 +2,15 @@
 	import {onMount} from 'svelte';
 	import QuoteEntry from './QuoteEntry.svelte';
 	import Solver from './Solver.svelte';
+	import Toaster from './Toaster.svelte';
 	import Parser from './parser.js';
 	import {save, load} from './storage.js';
 	let words = [];
 	let knowns = [];
+	let msg = '';
+	let msgType = 'error';
 	const PARSED = 'PARSED';
+
 	function startSolving(ev) {
 		const { quote, knownEnc, knownPlain } = ev.detail;
 		const enc = (knownEnc || '').toUpperCase();
@@ -25,6 +29,14 @@
 		save(PARSED, null);
 		knowns = [];
 		words = [];
+	}
+
+	function showError(ev) {
+		const error = ev.detail.msg;
+		msg = error;
+	}
+	function closeToast() {
+		msg = '';
 	}
 
 	onMount(() => {
@@ -49,7 +61,8 @@
 		{#if words.length === 0}
 			<QuoteEntry on:start={startSolving}/>
 		{:else}
-			<Solver words={words} knowns={knowns} on:reset={startOver}/>
+			<Solver words={words} knowns={knowns} on:reset={startOver} on:error={showError}/>
 		{/if}
 	</main>
+	<Toaster msg={msg} type={msgType} on:close={closeToast}/>
 </div>

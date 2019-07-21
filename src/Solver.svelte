@@ -105,10 +105,14 @@ function getHelp(word) {
   return () => {
     const pattern = createPattern(word, $key);
     console.log('Get Help', pattern, word);
-    showHelp = true;
-    setTimeout(function() {
-      const win = window.open(`https://xw.bate.dev/#advanced!$${pattern}`, 'xwhelp');
-    }, 10);
+    if (pattern == null) {
+      dispatch('error', { msg: 'Word needs at least one letter defined to search.'})
+    } else {
+      showHelp = true;
+      setTimeout(function() {
+        const win = window.open(`https://xw.bate.dev/#advanced!$${pattern}`, 'xwhelp');
+      }, 10);
+    }
   };
 }
 
