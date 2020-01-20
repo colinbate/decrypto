@@ -66,7 +66,7 @@ button:focus {
 
 button:active {
 	box-shadow: none;
-	border-top-color: hsla(15, 100%, 50%, 1);
+	border-top-color: hsl(15, 100%, 50%);
 }
 
 .cf::after, .cf::before {
