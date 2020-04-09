@@ -1,6 +1,6 @@
 import { save, load } from './storage.js';
 
-const API_BASE = 'https://api.razzlepuzzles.com/cryptograms?om=false&locale=en&z=DATE-1'
+const API_BASE = 'https://quote-api.colinbate.workers.dev/?date=DATE'
 const LIST_KEY = 'LIST';
 const TODAY_KEY = 'TODAY';
 const INDEX_KEY = 'INDEX';
