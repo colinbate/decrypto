@@ -44,7 +44,7 @@ const dispatch = createEventDispatcher();
   <p>
     A simple utility to help you solve letter substitution puzzles.
     Enter the cypher text below. You can click the '?' button after
-    each word to search using my <a href="https://xw.cbate.com/#advanced">xw</a> tool.</p>
+    each word to search using my <a href="https://xw.bate.dev/#advanced">xw</a> tool.</p>
   <div class="control">
     <label>Cypher Text</label>
     <button type="button" class="btn-small" on:click={setNewQuote}>Load Random Quote</button>
