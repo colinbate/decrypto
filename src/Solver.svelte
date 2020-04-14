@@ -271,7 +271,7 @@ button {
   .taken {
     color: hsla(0, 0%, 40%, 1);
   }
-  .dupe {
+  input.dupe {
     background-color: hsla(10, 90%, 40%, 1);
     color: hsla(10, 100%, 85%, 1);
   }
