@@ -256,6 +256,29 @@ button {
     margin-left: 1rem;
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  .letter input {
+    background: hsla(0, 0%, 0%, 1);
+  }
+  .letter .highlight {
+    background: hsla(140, 60%, 30%, 1);
+  }
+  .letter input[disabled] {
+    color: hsl(120, 33%, 70%);
+    background: #000;
+  }
+  .taken {
+    color: hsla(0, 0%, 40%, 1);
+  }
+  .dupe {
+    background-color: hsla(10, 90%, 40%, 1);
+    color: hsla(10, 100%, 85%, 1);
+  }
+  .remaining, .reset {
+    border-top: 1px solid #666;
+  }
+}
 </style>
 <form class="solver">
   <div class="wrapmaster">
