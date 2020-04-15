@@ -35,7 +35,44 @@ onMount(() => {
       return k;
     });
   }
-})
+});
+
+let letterIndex = -1;
+function letterId() {
+  letterIndex += 1;
+  return `l-${letterIndex}`;
+}
+
+function gotoNextField(current, dir = 1) {
+  const total = letterIndex + 1;
+  const id = current.id;
+  const [,numid] = id.split('-');
+  const next = ((parseInt(numid, 10) + dir) + total) % total;
+  const nextid = 'l-' + next;
+  const nextField = current.form.elements.namedItem(nextid);
+  if (nextField) {
+    nextField.focus();
+    nextField.select();
+  }
+}
+
+function handleArrows(ev) {
+  if (document.activeElement && document.activeElement.tagName === 'INPUT') {
+    switch (ev.key) {
+      case "Left": // IE/Edge specific value
+      case "ArrowLeft":
+        gotoNextField(document.activeElement, -1);
+        break;
+      case "Right": // IE/Edge specific value
+      case "ArrowRight":
+        gotoNextField(document.activeElement, 1);
+        break;
+      default:
+        return;
+    }
+  }
+}
+
 function enterGuess(enc) {
   return (ev) => {
     let plain = ev.target.value.toUpperCase();
@@ -56,6 +93,7 @@ function enterGuess(enc) {
         saveMap(KEYS, k);
         return k;
       });
+      gotoNextField(ev.target, 1);
     } else {
       key.update(k => {
         k.delete(enc);
@@ -278,8 +316,12 @@ button {
   .remaining, .reset {
     border-top: 1px solid #666;
   }
+  .frame {
+    scrollbar-color: dark;
+  }
 }
 </style>
+<svelte:window on:keydown={handleArrows} />
 <form class="solver">
   <div class="wrapmaster">
   <div class="cf">
@@ -299,7 +341,8 @@ button {
                   on:blur={deselect}
                   class:highlight={letter.char === selected}
                   class:dupe={$dupes.has(letter.char)}
-                  disabled={!!letter.given}>
+                  disabled={!!letter.given}
+                  id={letterId()}>
                 <span>{letter.char}</span>
               </label>
             {/if}
