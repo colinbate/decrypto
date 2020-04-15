@@ -54,5 +54,5 @@ const dispatch = createEventDispatcher();
     <label>Known Replacement <span class="opt">(optional)</span></label>
     <input type="text" size="3" bind:value={knownEnc}> stands for <input type="text" size="3" bind:value={knownPlain}>
   </div>
-  <button type="button" on:click={() => dispatch('start', {quote:cypher, knownEnc, knownPlain})}>Start Solving</button>
+  <button type="button" disabled={cypher.length === 0} on:click={() => dispatch('start', {quote:cypher, knownEnc, knownPlain})}>Start Solving</button>
 </form>

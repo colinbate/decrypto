@@ -3,7 +3,6 @@ html, body {
 	width: 100%;
 	height: 100%;
 }
-
 body {
 	border-top: 0.5rem solid hsla(15, 100%, 50%, 1);
 	color: #333;
@@ -12,7 +11,6 @@ body {
 	box-sizing: border-box;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
-
 a {
 	color: hsl(195, 100%, 40%);
 	text-decoration: none;
@@ -69,6 +67,11 @@ button:active {
 	border-top-color: hsl(15, 100%, 50%);
 }
 
+button[disabled] {
+	cursor: not-allowed;
+	background-color: hsl(15, 50%, 40%);
+}
+
 .cf::after, .cf::before {
 	content: " ";
 	display: table;
@@ -89,7 +92,7 @@ button:active {
 		border: 1px solid #666;
 		color: #fff;
 	}
-	input, textarea {
+	.color-mode input, .color-mode textarea {
 		background-color: #000;
 	}
 	input:disabled {
