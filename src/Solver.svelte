@@ -62,10 +62,12 @@ function handleArrows(ev) {
       case "Left": // IE/Edge specific value
       case "ArrowLeft":
         gotoNextField(document.activeElement, -1);
+        ev.preventDefault();
         break;
       case "Right": // IE/Edge specific value
       case "ArrowRight":
         gotoNextField(document.activeElement, 1);
+        ev.preventDefault();
         break;
       default:
         return;
@@ -82,9 +84,11 @@ function enterGuess(enc) {
       if (newchar.length > 1 || newchar === prev) {
         return;
       }
-      plain = newchar;
+      plain = newchar.toUpperCase();
     }
     if (($key.get(enc) || '') === plain) {
+      ev.target.value = plain;
+      gotoNextField(ev.target, 1);
       return;
     }
     if (plain) {
