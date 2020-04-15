@@ -43,14 +43,22 @@ function letterId() {
   return `l-${letterIndex}`;
 }
 
-function gotoNextField(current, dir = 1) {
+function getNextField(current, dir) {
   const total = letterIndex + 1;
   const id = current.id;
   const [,numid] = id.split('-');
   const next = ((parseInt(numid, 10) + dir) + total) % total;
   const nextid = 'l-' + next;
   const nextField = current.form.elements.namedItem(nextid);
-  if (nextField) {
+  return nextField;
+}
+
+function gotoNextField(current, dir = 1, empty = false) {
+  let nextField = getNextField(current, dir);
+  while (nextField !== current && empty && nextField.value) {
+    nextField = getNextField(nextField, dir);
+  }
+  if (nextField && nextField !== current) {
     nextField.focus();
     nextField.select();
   }
@@ -80,15 +88,15 @@ function enterGuess(enc) {
     let plain = ev.target.value.toUpperCase();
     if (plain.length > 1) {
       const prev = $key.get(enc) || '';
-      const newchar = plain.replace(prev, '');
+      let newchar = plain.replace(prev, '');
       if (newchar.length > 1 || newchar === prev) {
-        return;
+        newchar = prev;
       }
       plain = newchar.toUpperCase();
     }
     if (($key.get(enc) || '') === plain) {
       ev.target.value = plain;
-      gotoNextField(ev.target, 1);
+      gotoNextField(ev.target, 1, true);
       return;
     }
     if (plain) {
@@ -97,7 +105,7 @@ function enterGuess(enc) {
         saveMap(KEYS, k);
         return k;
       });
-      gotoNextField(ev.target, 1);
+      gotoNextField(ev.target, 1, true);
     } else {
       key.update(k => {
         k.delete(enc);
