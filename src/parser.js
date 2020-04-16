@@ -22,7 +22,7 @@ function getTokenType (code) {
   if (this.lexpos === 0 && this.lastType === LEX_NONE) {
     return LEX_WORDBEGIN;
   }
-  if (code === 32) {
+  if (code === 32 || code === 10) {
     if (this.lastType === LEX_LETTER || this.lastType === LEX_PUNCTUATION) {
       return LEX_WORDEND;
     }
@@ -76,7 +76,7 @@ function getPunct(char) {
 
 export default class CryptoquoteParser {
   constructor (cipher) {
-    this.cipher = cipher.toUpperCase().trim();
+    this.cipher = cipher.toUpperCase().trim().replace('\r', '');
     this.lexpos = 0;
     this.lastType = LEX_NONE;
   }

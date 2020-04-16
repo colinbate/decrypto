@@ -12,6 +12,7 @@ let selected = '';
 let selectedWord = null;
 let timer;
 let showHelp = false;
+let showCopy = false;
 const key = writable(new Map());
 const dupes = derived(key, k => findDuplicates(k));
 const guessed = derived(key, k => new Set(k.values()));
@@ -19,6 +20,7 @@ const dispatch = createEventDispatcher();
 const KEYS = 'KEYS';
 const KNOWN = 'KNOWN';
 onMount(() => {
+  showCopy = !!window.navigator.clipboard;
   const keys = loadMap(KEYS);
   knownMap = loadMap(KNOWN);
   if (keys) {
@@ -169,6 +171,23 @@ function getHelp(word) {
 function stopHelp() {
   showHelp = false;
 }
+
+function copy() {
+  const all = [];
+  for (const word of words) {
+    for (const letter of word) {
+      if (letter.punctuation) {
+        all.push(letter.char);
+      } else {
+        all.push($key.get(letter.char) || '_');
+      }
+    }
+    all.push(' ');
+  }
+  const final = all.join('').trim();
+  window.navigator.clipboard.writeText(final);
+  dispatch('note', { msg: 'Copied' });
+}
 </script>
 <style>
 .wrapmaster {
@@ -178,7 +197,7 @@ function stopHelp() {
 
 .word {
   margin-right: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
   float: left;
   position: relative;
 }
@@ -209,6 +228,7 @@ function stopHelp() {
   float: left;
   text-align: center;
   margin-right: 0.25rem;
+  margin-bottom: 1rem;
 }
 
 .letter input {
@@ -379,5 +399,6 @@ button {
   <div class="reset">
     <button type="button" on:click={clear}>Clear Guesses</button>
     <button type="button" on:click={reset}>Try Different Quote</button>
+    {#if showCopy}<button type="button" on:click={copy}>Copy to Clipboard</button>{/if}
   </div>
 </form>
