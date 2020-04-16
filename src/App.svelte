@@ -9,6 +9,7 @@
   let knowns = [];
   let msg = '';
   let msgType = 'error';
+  let fromUrl = false;
   const PARSED = 'PARSED';
 
   function startSolving(ev) {
@@ -36,7 +37,7 @@
     msg = error;
     msgType = 'error';
   }
-  
+
   function showNote(ev) {
     const note = ev.detail.msg;
     msg = note;
@@ -60,6 +61,7 @@
         if (proceed) {
           loaded = (new Parser(ct)).tokenize();
           save(PARSED, loaded);
+          fromUrl = true;
         }
       }
       window.location.hash = '';
@@ -83,7 +85,7 @@
     {#if words.length === 0}
       <QuoteEntry on:start={startSolving}/>
     {:else}
-      <Solver words={words} knowns={knowns} on:reset={startOver} on:error={showError} on:note={showNote}/>
+      <Solver {words} {knowns} on:reset={startOver} on:error={showError} on:note={showNote} {fromUrl}/>
     {/if}
   </main>
   <Toaster msg={msg} type={msgType} on:close={closeToast}/>

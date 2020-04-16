@@ -6,6 +6,7 @@ import {saveMap, loadMap} from './storage.js';
 import {writable, derived} from 'svelte/store';
 export let words;
 export let knowns;
+export let fromUrl;
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 let knownMap = new Map();
 let selected = '';
@@ -21,6 +22,10 @@ const KEYS = 'KEYS';
 const KNOWN = 'KNOWN';
 onMount(() => {
   showCopy = !!window.navigator.clipboard;
+  if (fromUrl) {
+    clear(false);
+    saveMap(KNOWN, null);
+  }
   const keys = loadMap(KEYS);
   knownMap = loadMap(KNOWN);
   if (keys) {
