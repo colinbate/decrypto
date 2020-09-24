@@ -332,31 +332,31 @@ button {
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .letter input {
+
+  :global(.dark) .letter input {
     background: hsla(0, 0%, 0%, 1);
   }
-  .letter .highlight {
+  :global(.dark) .letter .highlight {
     background: hsla(140, 60%, 30%, 1);
   }
-  .letter input[disabled] {
+  :global(.dark) .letter input[disabled] {
     color: hsl(120, 33%, 70%);
     background: #000;
   }
-  .taken {
+  :global(.dark) .taken {
     color: hsla(0, 0%, 40%, 1);
   }
-  input.dupe {
+  :global(.dark) input.dupe {
     background-color: hsla(10, 90%, 40%, 1);
     color: hsla(10, 100%, 85%, 1);
   }
-  .remaining, .reset {
+  :global(.dark) .remaining, .reset {
     border-top: 1px solid #666;
   }
-  .frame {
+  :global(.dark) .frame {
     scrollbar-color: dark;
   }
-}
+
 </style>
 <svelte:window on:keydown={handleArrows} />
 <form class="solver">
