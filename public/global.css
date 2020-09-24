@@ -81,21 +81,19 @@ button[disabled] {
 	clear: both;
 }
 
-@media (prefers-color-scheme: dark) {
-	.color-mode {
+	.dark.color-mode {
 		background-color: #333;
 	}
-	.color-mode body {
+	.dark.color-mode body {
 		color: #fff;
 	}
-	input, button, select, textarea {
+	.dark input, button, select, textarea {
 		border: 1px solid #666;
 		color: #fff;
 	}
-	.color-mode input, .color-mode textarea {
+	.dark.color-mode input, .dark.color-mode textarea {
 		background-color: #000;
 	}
-	input:disabled {
+	.dark.color-mode input:disabled {
 		color: #666;
 	}
-}

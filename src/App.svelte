@@ -1,6 +1,7 @@
 <script>
   import {onMount} from 'svelte';
   import QuoteEntry from './QuoteEntry.svelte';
+  import ModeSwitcher from './ModeSwitcher.svelte';
   import Solver from './Solver.svelte';
   import Toaster from './Toaster.svelte';
   import Parser from './parser.js';
@@ -78,7 +79,7 @@
     max-width: 60rem;
   }
 </style>
-
+<ModeSwitcher />
 <div class="content">
   <header><h1>DeCrypto</h1></header>
   <main>
