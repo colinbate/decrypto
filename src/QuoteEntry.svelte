@@ -46,13 +46,13 @@ const dispatch = createEventDispatcher();
     Enter the cypher text below. You can click the '?' button after
     each word to search using my <a href="https://xw.bate.dev/#advanced">xw</a> tool.</p>
   <div class="control">
-    <label>Cypher Text</label>
+    <label for="cyphertext">Cypher Text</label>
     <button type="button" class="btn-small" on:click={setNewQuote}>Load Random Quote</button>
-    <textarea bind:value={cypher} rows="6"></textarea>
+    <textarea bind:value={cypher} rows="6" id="cyphertext"></textarea>
   </div>
   <div class="control">
-    <label>Known Replacement <span class="opt">(optional)</span></label>
-    <input type="text" size="3" bind:value={knownEnc}> stands for <input type="text" size="3" bind:value={knownPlain}>
+    <label for="origc">Known Replacement <span class="opt">(optional)</span></label>
+    <input type="text" size="3" bind:value={knownEnc} id="origc"> stands for <input type="text" size="3" bind:value={knownPlain}>
   </div>
   <button type="button" disabled={cypher.length === 0} on:click={() => dispatch('start', {quote:cypher, knownEnc, knownPlain})}>Start Solving</button>
 </form>
