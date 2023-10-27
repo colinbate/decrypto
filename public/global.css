@@ -87,7 +87,7 @@ button[disabled] {
 	.dark.color-mode body {
 		color: #fff;
 	}
-	.dark input, button, select, textarea {
+	.dark input, .dark button, .dark select, .dark textarea {
 		border: 1px solid #666;
 		color: #fff;
 	}
